@@ -4,7 +4,7 @@
     <div class="row meals-row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="info-box">
-                <span class="info-box-icon bg-green"><i class="ion ion-arrow-up-b"></i></span>
+                <a href="@routes.PaymentController.incomes"><span class="info-box-icon bg-green"><i class="ion ion-arrow-up-b"></i></span></a>
                 <div class="info-box-content">
                     <span class="info-box-text">@Messages("home.incomes")</span>
                     <span class="info-box-number">@stats._1</span>
@@ -13,7 +13,7 @@
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="info-box">
-                <span class="info-box-icon bg-red"><i class="ion ion-arrow-down-b"></i></span>
+                <a href="@routes.PaymentController.charges"><span class="info-box-icon bg-red"><i class="ion ion-arrow-down-b"></i></span></a>
                 <div class="info-box-content">
                     <span class="info-box-text">@Messages("home.charges")</span>
                     <span class="info-box-number">@stats._2</span>
@@ -22,7 +22,7 @@
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="info-box">
-                <span class="info-box-icon bg-aqua"><i class="ion ion-android-checkbox-outline"></i></span>
+                <a href="@routes.ApplicationController.latestVoting"><span class="info-box-icon bg-aqua"><i class="ion ion-android-checkbox-outline"></i></span></a>
                 <div class="info-box-content">
                     <span class="info-box-text">@Messages("home.votings")</span>
                     <span class="info-box-number">@stats._3</span>
@@ -31,7 +31,7 @@
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="info-box">
-                <span class="info-box-icon bg-yellow"><i class="ion ion-ios-cart"></i></span>
+                <a href="@routes.ApplicationController.latestOrder"><span class="info-box-icon bg-yellow"><i class="ion ion-ios-cart"></i></span></a>
                 <div class="info-box-content">
                     <span class="info-box-text">@Messages("home.orders")</span>
                     <span class="info-box-number">@stats._4</span>

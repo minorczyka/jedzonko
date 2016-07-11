@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.{Environment, LogoutEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
-import dao.{GroupDao, UserDao}
+import dao.{GroupDao, OrderDao, UserDao, VotingDao}
 import forms.{SignInForm, SignUpForm}
 import play.api.i18n.MessagesApi
 import play.api.libs.concurrent.Execution.Implicits._
@@ -16,7 +16,9 @@ class ApplicationController @Inject()(
   val env: Environment[SilhouetteUser, CookieAuthenticator],
   val socialProviderRegistry: SocialProviderRegistry,
   val userDao: UserDao,
-  val groupDao: GroupDao) extends Silhouette[SilhouetteUser, CookieAuthenticator] {
+  val groupDao: GroupDao,
+  val votingDao: VotingDao,
+  val orderDao: OrderDao) extends Silhouette[SilhouetteUser, CookieAuthenticator] {
 
   def index = SecuredAction.async { implicit request =>
     val incomes = userDao.countUserIncomes(request.identity.userId)
@@ -33,6 +35,20 @@ class ApplicationController @Inject()(
     } yield(i, c, v, o, g)).map { x =>
       val stats = (x._1, x._2, x._3, x._4, x._5)
       Ok(views.html.home(request.identity, stats))
+    }
+  }
+
+  def latestVoting = SecuredAction.async { implicit request =>
+    votingDao.findLatestOpenUserVoting(request.identity.userId).map {
+      case Some(votingRow) => Redirect(routes.VotingController.votingDetails(votingRow.id))
+      case None => Redirect(routes.ApplicationController.index)
+    }
+  }
+
+  def latestOrder = SecuredAction.async { implicit request =>
+    orderDao.findLatestOpenUserOrder(request.identity.userId).map {
+      case Some(orderRow) => Redirect(routes.OrderController.getOrderDetails(orderRow.id))
+      case None => Redirect(routes.ApplicationController.index)
     }
   }
 

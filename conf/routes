@@ -4,6 +4,8 @@
 
 # Home page
 GET     /                               controllers.ApplicationController.index
+GET     /latest/voting                  controllers.ApplicationController.latestVoting
+GET     /latest/order                   controllers.ApplicationController.latestOrder
 GET     /signIn                         controllers.ApplicationController.signIn
 GET     /signIn/:redirect               controllers.ApplicationController.signInAndRedirect(redirect)
 GET     /signUp                         controllers.ApplicationController.signUp

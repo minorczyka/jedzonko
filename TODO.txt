@@ -1,4 +1,3 @@
 -edytowanie zamówień
--przechodzenie do najnowszego zamówienia/głosowania
 
 bugi:

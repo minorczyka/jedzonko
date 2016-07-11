@@ -50,6 +50,14 @@ class OrderDao @Inject()(val dbConfigProvider: DatabaseConfigProvider) {
     db.run(q.result).map(x => x)
   }
 
+  def findLatestOpenUserOrder(userId: Int) : Future[Option[OrderRow]] = {
+    val q = for {
+      (((u, ug), g), o) <- Tables.User join Tables.UserToGroup on (_.id === _.userId) join Tables.Group on (_._2.groupId === _.id) join Tables.Order on (_._2.id === _.groupId)
+      if (u.id === userId && o.status === OrderDao.orderStarted)
+    } yield(o)
+    db.run(q.sortBy(_.creationDate.desc).result.headOption).map(x => x)
+  }
+
   def findUserOrdersWithDetails(userId: Int) : Future[Seq[(GroupRow, OrderRow, UserRow, PlaceRow)]] = {
     val q = for {
       (((((u, ug), g), o), a), p) <- Tables.User join Tables.UserToGroup on (_.id === _.userId) join Tables.Group on (_._2.groupId === _.id) join Tables.Order on (_._2.id === _.groupId) join Tables.User on (_._2.authorId === _.id) join Tables.Place on (_._1._2.placeId === _.id)

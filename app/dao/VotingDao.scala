@@ -31,6 +31,14 @@ class VotingDao @Inject()(val dbConfigProvider: DatabaseConfigProvider) {
     db.run(q.result).map(x => x)
   }
 
+  def findLatestOpenUserVoting(userId: Int) : Future[Option[VotingRow]] = {
+    val q = for {
+      (((u, ug), g), v) <- Tables.User join Tables.UserToGroup on (_.id === _.userId) join Tables.Group on (_._2.groupId === _.id) join Tables.Voting on (_._2.id === _.groupId)
+      if (u.id === userId && v.status === VotingDao.votingStarted)
+    } yield(v)
+    db.run(q.sortBy(_.creationDate.desc).result.headOption).map(x => x)
+  }
+
   def findUserVotingsWithAuthors(userId: Int) : Future[Seq[(GroupRow, VotingRow, UserRow)]] = {
     val q = for {
       ((((u, ug), g), v), a) <- Tables.User join Tables.UserToGroup on (_.id === _.userId) join Tables.Group on (_._2.groupId === _.id) join Tables.Voting on (_._2.id === _.groupId) join Tables.User on (_._2.authorId === _.id)
