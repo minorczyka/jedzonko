@@ -8,6 +8,7 @@ import dao.{GroupDao, UserDao}
 import forms.{SignInForm, SignUpForm}
 import play.api.i18n.MessagesApi
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.mvc.{Cookie, DiscardingCookie}
 import silhouette.SilhouetteUser
 
 class ApplicationController @Inject()(
@@ -37,20 +38,27 @@ class ApplicationController @Inject()(
 
   def signIn = UserAwareAction { implicit request =>
     request.identity match {
-      case Some(user) => Redirect(routes.ApplicationController.index())
-      case None => Ok(views.html.signIn(SignInForm.form, socialProviderRegistry))
+      case Some(user) => Redirect(routes.ApplicationController.index)
+      case None => Ok(views.html.signIn(SignInForm.form, socialProviderRegistry)).discardingCookies(DiscardingCookie("redirectionUrl"))
+    }
+  }
+
+  def signInAndRedirect(redirect: String) = UserAwareAction { implicit request =>
+    request.identity match {
+      case Some(user) => Redirect(routes.ApplicationController.index)
+      case None => Ok(views.html.signIn(SignInForm.form, socialProviderRegistry)).withCookies(Cookie("redirectionUrl", redirect))
     }
   }
 
   def signUp = UserAwareAction { implicit request =>
     request.identity match {
-      case Some(user) => Redirect(routes.ApplicationController.index())
+      case Some(user) => Redirect(routes.ApplicationController.index)
       case None => Ok(views.html.signUp(SignUpForm.form))
     }
   }
 
   def signOut = SecuredAction.async { implicit request =>
-    val result = Redirect(routes.ApplicationController.index())
+    val result = Redirect(routes.ApplicationController.signIn)
     env.eventBus.publish(LogoutEvent(request.identity, request, request2Messages))
 
     env.authenticatorService.discard(request.authenticator, result)

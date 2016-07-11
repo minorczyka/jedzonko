@@ -55,7 +55,10 @@ class CredentialsAuthController @Inject() (val messagesApi: MessagesApi,
       data => {
         val credentials = Credentials(data.email, data.password)
         credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
-          val result = Redirect(routes.ApplicationController.index())
+          val redirect = request.cookies.get("redirectionUrl") match {
+            case Some(cookie) => Redirect(cookie.value)
+            case None => Redirect(routes.ApplicationController.index())
+          }
           userService.retrieve(loginInfo).flatMap {
             case Some(user) =>
               val c = configuration.underlying
@@ -70,7 +73,7 @@ class CredentialsAuthController @Inject() (val messagesApi: MessagesApi,
               }.flatMap { authenticator =>
                 env.eventBus.publish(LoginEvent(user, request, request2Messages))
                 env.authenticatorService.init(authenticator).flatMap { v =>
-                  env.authenticatorService.embed(v, result)
+                  env.authenticatorService.embed(v, redirect)
                 }
               }
             case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))

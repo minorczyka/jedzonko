@@ -12,9 +12,6 @@ import play.api.routing.Router
 
 import scala.concurrent.Future
 
-/**
-  * Created by Kompu on 2016-03-11.
-  */
 class ErrorHandler @Inject() (
   val messagesApi: MessagesApi,
   env: play.api.Environment,
@@ -24,10 +21,11 @@ class ErrorHandler @Inject() (
   extends DefaultHttpErrorHandler(env, config, sourceMapper, router)
   with SecuredErrorHandler with I18nSupport {
 
-  override def onNotAuthenticated(request: RequestHeader, messages: Messages): Option[Future[Result]] =
-    Some(Future.successful(Redirect(routes.ApplicationController.signIn())))
+  override def onNotAuthenticated(request: RequestHeader, messages: Messages): Option[Future[Result]] = {
+    Some(Future.successful(Redirect(routes.ApplicationController.signInAndRedirect(request.uri))))
+  }
 
   override def onNotAuthorized(request: RequestHeader, messages: Messages): Option[Future[Result]] = {
-    Some(Future.successful(Redirect(routes.ApplicationController.signIn()).flashing("error" -> Messages("access.denied")(messages))))
+    Some(Future.successful(Redirect(routes.ApplicationController.signIn).flashing("error" -> Messages("access.denied")(messages))))
   }
 }

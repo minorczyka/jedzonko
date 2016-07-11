@@ -5,6 +5,7 @@
 # Home page
 GET     /                               controllers.ApplicationController.index
 GET     /signIn                         controllers.ApplicationController.signIn
+GET     /signIn/:redirect               controllers.ApplicationController.signInAndRedirect(redirect)
 GET     /signUp                         controllers.ApplicationController.signUp
 GET     /signOut                        controllers.ApplicationController.signOut
 GET     /authenticate/:provider         controllers.SocialAuthController.authenticate(provider)

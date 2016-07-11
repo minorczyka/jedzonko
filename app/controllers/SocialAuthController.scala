@@ -37,6 +37,10 @@ class SocialAuthController @Inject() (val messagesApi: MessagesApi,
     * @return The result to display.
     */
   def authenticate(provider: String) = Action.async { implicit request =>
+    val redirect = request.cookies.get("redirectionUrl") match {
+      case Some(cookie) => Redirect(cookie.value)
+      case None => Redirect(routes.ApplicationController.index())
+    }
     (socialProviderRegistry.get[SocialProvider](provider) match {
       case Some(p: SocialProvider with CommonSocialProfileBuilder) =>
         p.authenticate().flatMap {
@@ -47,7 +51,7 @@ class SocialAuthController @Inject() (val messagesApi: MessagesApi,
             authInfo <- authInfoRepository.save(profile.loginInfo, authInfo)
             authenticator <- env.authenticatorService.create(profile.loginInfo)
             value <- env.authenticatorService.init(authenticator)
-            result <- env.authenticatorService.embed(value, Redirect(routes.ApplicationController.index()))
+            result <- env.authenticatorService.embed(value, redirect)
           } yield {
             env.eventBus.publish(LoginEvent(user, request, request2Messages))
             result
