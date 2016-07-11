@@ -1,0 +1,47 @@
+@(signUpForm: Form[forms.SignUpForm.Data])(implicit request: RequestHeader, messages: Messages)
+
+@layout(Messages("auth.signup.title"), Some("register-page"), Some(routes.Assets.versioned("css/loginPageStyle.css"))) {
+    <div class="register-box">
+        <div class="register-logo">
+            <a href="@routes.ApplicationController.index"><strong>@Messages("app.name")</strong></a>
+        </div>
+        <div class="register-box-body">
+            <p class="login-box-msg">@Messages("auth.signup.title")</p>
+            @tags.alertFromRequest(request, "error")
+            @tags.alertFromForm(signUpForm)
+            @helper.form(action = routes.SignUpController.signUp) {
+                @helper.CSRF.formField
+                <div class="form-group has-feedback">
+                    <input type="email" class="form-control" placeholder="@Messages("auth.email")" required="" id="email" name="email">
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" class="form-control" placeholder="@Messages("auth.password")" required="" id="password1" name="password1">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" class="form-control" placeholder="@Messages("auth.repassword")" required="" id="password2" name="password2">
+                    <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="text" class="form-control" placeholder="@Messages("auth.signup.firstname")" required="" id="firstName" name="firstName">
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="text" class="form-control" placeholder="@Messages("auth.signup.lastname")" required="" id="lastName" name="lastName">
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-xs-offset-8">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">@Messages("auth.signup")</button>
+                    </div>
+                </div>
+            }
+            <div class="social-auth-links text-center">
+                <p>- OR -</p>
+                <a href="@routes.SocialAuthController.authenticate("google")" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> @Messages("auth.google")</a>
+            </div>
+            <a href="@routes.ApplicationController.signIn" class="text-center">@Messages("auth.signup.signin")</a>
+        </div>
+    </div>
+}

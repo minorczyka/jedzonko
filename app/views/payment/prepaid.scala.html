@@ -1,0 +1,83 @@
+@import dao.PaymentDao
+@(user: silhouette.SilhouetteUser, prepaids: Seq[(PrepaidRow, Option[String], Option[String])],
+        balances: Seq[(Int, Option[String], Float)])(implicit messages: Messages)
+
+@main(Messages("payment.prepaid.title"), user, Some("payment"), Some(Messages("payment.prepaid.title"))) {
+    <div class="col-lg-6 col-lg-offset-1">
+        <div class="box box-primary">
+            <div class="box-body">
+                <table id="prepaid-table" class="table table-bordered table-hover" role="grid">
+                    <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th><span data-toggle="tooltip" title="@Messages("payment.prepaid.explanation.user")">
+                            @Messages("payment.prepaid.user")
+                            </span></th>
+                            <th><span data-toggle="tooltip" title="@Messages("payment.prepaid.explanation.cost")">
+                            @Messages("payment.prepaid.cost")
+                            </span></th>
+                            <th><span data-toggle="tooltip" title="@Messages("payment.prepaid.explanation.date")">
+                            @Messages("payment.prepaid.date")
+                            </span></th>
+                            <th><span data-toggle="tooltip" title="@Messages("payment.prepaid.explanation.status")">
+                            @Messages("payment.prepaid.status")
+                            </span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for((prepaid, i) <- prepaids.zipWithIndex) {
+                        <tr>
+                            <td>@{i + 1}</td>
+                            <td>
+                                @if(prepaid._1.payerId == user.userId) {
+                                    <a href="@routes.UserController.userDetails(prepaid._1.receiverId)">@prepaid._3</a>
+                                } else {
+                                    <a href="@routes.UserController.userDetails(prepaid._1.payerId)">@prepaid._2</a>
+                                }
+                            </td>
+                            <td>@tags.currency(Some(prepaid._1.amount))</td>
+                            <td>@prepaid._1.transactionDate.format("dd-MM-yyyy HH:mm")</td>
+                            <td style="text-align: center">
+                                @if(prepaid._1.`type` == PaymentDao.prepaidStorage) {
+                                    <span class="badge bg-blue">@Messages("payment.prepaid.status.deposit")</span>
+                                } else {
+                                    <a href="@routes.OrderController.findOrder(prepaid._1.orderId.getOrElse(0))"><span class="badge bg-green">@Messages("payment.prepaid.status.payment")</span></a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="box box-primary">
+            <div class="box-body">
+                <table id="balance-table" class="table table-bordered table-hover" role="grid">
+                    <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th><span data-toggle="tooltip" title="@Messages("payment.prepaid.explanation.user")">
+                            @Messages("payment.prepaid.user")
+                            </span></th>
+                            <th><span data-toggle="tooltip" title="@Messages("payment.prepaid.explanation.balance")">
+                            @Messages("payment.prepaid.balance")
+                            </span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for((balance, i) <- balances.zipWithIndex) {
+                        <tr>
+                            <td>@{i + 1}</td>
+                            <td><a href="@routes.UserController.userDetails(balance._1)">@balance._2</a></td>
+                            <td>@tags.currency(Some(balance._3))</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="@routes.Assets.versioned("js/payment.prepaid.js")"></script>
+}

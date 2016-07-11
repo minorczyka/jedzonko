@@ -1,0 +1,56 @@
+@import java.sql.Timestamp
+@(comments: Seq[(models.UserRow, String, Timestamp)], title: String, user: silhouette.SilhouetteUser,
+        call: Option[Call], height: Int = 250)(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{ b3.vertical.fieldConstructor }
+
+<div class="box box-primary direct-chat direct-chat-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">@title</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="direct-chat-messages" style="height: @{height}px">
+            @for(c <- comments) {
+                @if(c._1.id == user.userId) {
+                    <div class="direct-chat-msg">
+                        <div class="direct-chat-info clearfix">
+                            <span class="direct-chat-name pull-left">@c._1.fullName</span>
+                            <span class="direct-chat-timestamp pull-right">@c._3.format("dd-MM-yyyy HH:mm")</span>
+                        </div>
+                        <a href="@routes.UserController.userDetails(c._1.id)">
+                            <img class="direct-chat-img" src="@c._1.avatarUrl.getOrElse(routes.Assets.versioned("images/silhouette.png"))" alt="message user image">
+                        </a>
+                        <div class="direct-chat-text">@c._2</div>
+                    </div>
+                } else {
+                    <div class="direct-chat-msg right">
+                        <div class="direct-chat-info clearfix">
+                            <span class="direct-chat-name pull-right">@c._1.fullName</span>
+                            <span class="direct-chat-timestamp pull-left">@c._3.format("dd-MM-yyyy HH:mm")</span>
+                        </div>
+                        <a href="@routes.UserController.userDetails(c._1.id)">
+                            <img class="direct-chat-img" src="@c._1.avatarUrl.getOrElse(routes.Assets.versioned("images/silhouette.png"))" alt="message user image">
+                        </a>
+                        <div class="direct-chat-text">@c._2</div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    @call.map { c =>
+    <div class="box-footer">
+        @b3.form(c) {
+            @helper.CSRF.formField
+            <div class="input-group">
+                <input type="text" id="message" name="message" placeholder="Type Message ..." class="form-control" required>
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary btn-flat">Send</button>
+                </span>
+            </div>
+        }
+    </div>
+    }
+</div>

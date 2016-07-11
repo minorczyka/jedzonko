@@ -1,0 +1,26 @@
+@(user: silhouette.SilhouetteUser, groups: Seq[(String, String)], form: Form[forms.CreateOrderForm.Data])(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-3", "col-md-9") }
+
+@main(Messages("order.create.title"), user, Some("order"), Some(Messages("order.create.title"))) {
+    <div class="col-lg-6 col-lg-offset-3">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">@Messages("order.create.new")</h3>
+            </div>
+            <div class="box-body">
+                @tags.alertFromForm(form)
+                @b3.form(routes.OrderController.handleCreateOrder) {
+                    @helper.CSRF.formField
+                    @b3.select(form("groupId"), options = groups, '_label -> Messages("order.create.group"), 'placehodler -> Messages("order.create.group"))
+                    @b3.select(form("placesIds"), options = Seq[(String, String)](), '_label -> Messages("order.create.places"), 'placehodler -> Messages("order.create.places"))
+                    @b3.inputType( "text", form("orderEnd"), 'class -> "form-control form_datetime", '_label -> Messages("order.create.order.end"))
+                    @b3.number(form("discount"), '_label -> Messages("order.create.discount"), 'placeholder -> Messages("order.create.discount"), 'step -> 0.01)
+                    @b3.number(form("additionalCost"), '_label -> Messages("order.create.cost"), 'placeholder -> Messages("order.create.cost"), 'step -> 0.01)
+                    @b3.submit('class -> "btn btn-primary"){ @Messages("order.create.create") }
+                }
+            </div>
+        </div>
+    </div>
+    <script src="@routes.Assets.versioned("js/voting.create.js")"></script>
+}

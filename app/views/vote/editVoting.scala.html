@@ -1,0 +1,28 @@
+@(user: silhouette.SilhouetteUser, voting: models.VotingRow, allPlaces: Seq[models.PlaceRow], chosenPlaces: Seq[models.PlaceRow],
+        groups: Seq[(String, String)], form: Form[forms.CreateVotingForm.Data])(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-3", "col-md-9") }
+
+@main(Messages("vote.edit.title"), user, Some("vote"), Some(Messages("vote.edit.title"))) {
+    <div class="col-lg-6 col-lg-offset-3">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">@Messages("vote.edit.title")</h3>
+            </div>
+            <div class="box-body">
+                @tags.alertFromForm(form)
+                @b3.form(routes.VotingController.handleEditVoting(voting.id)) {
+                    @helper.CSRF.formField
+                    @b3.select(form("groupId"), options = groups, '_label -> Messages("vote.create.group"),
+                        'placehodler -> Messages("vote.create.group"), 'value -> voting.groupId, 'readonly -> true)
+                    @b3.select(form("placesIds"), options = allPlaces.map(p => (p.id.toString, p.name)),
+                        '_label -> Messages("vote.create.places"), 'placehodler -> Messages("vote.create.places"),
+                        'multiple -> true, 'value -> chosenPlaces.map(p => p.id).mkString(","))
+                    @b3.inputType( "text", form("votingEnd"), 'class -> "form-control form_datetime", '_label -> Messages("vote.create.vote.end"))
+                    @b3.inputType( "text", form("orderEnd"), 'class -> "form-control form_datetime", '_label -> Messages("vote.create.order.end"))
+                    @b3.submit('class -> "btn btn-default"){ @Messages("vote.edit.edit") }
+                }
+            </div>
+        </div>
+    </div>
+}

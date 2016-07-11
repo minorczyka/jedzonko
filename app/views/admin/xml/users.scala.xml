@@ -1,0 +1,16 @@
+@(users: Seq[models.UserRow])
+
+<users>
+@for(u <- users) {
+    <user id="@u.id">
+        <providerId>@u.providerId</providerId>
+        <providerKey>@u.providerKey</providerKey>
+        <firstName>@u.firstName</firstName>
+        <lastName>@u.lastName</lastName>
+        <fullName>@u.fullName</fullName>
+        <email>@u.email</email>
+        <avatar>@u.avatarUrl</avatar>
+        <privileges>@u.privileges</privileges>
+    </user>
+}
+</users>

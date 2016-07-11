@@ -1,0 +1,3 @@
+@(request: RequestHeader, key: String)(implicit messages: Messages)
+
+@request.flash.get(key).map { msg => @alert(msg, key) }

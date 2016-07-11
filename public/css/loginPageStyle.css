@@ -1,0 +1,14 @@
+/* Lato font */
+@import url(http://fonts.googleapis.com/css?family=Lato:400,300,100,300italic);
+
+.register-page, .login-page {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("../images/login_background.jpg");
+    background-size: cover;
+    /*color: #fff;*/
+    background-attachment: fixed;
+}
+
+.register-logo > a > strong, .login-logo > a > strong{
+    color: #fff;
+    font-family: "Lato Light", 'Arial', sans-serif;
+}

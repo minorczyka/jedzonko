@@ -1,0 +1,43 @@
+@(user: silhouette.SilhouetteUser, places: Seq[models.PlaceRow])(implicit messages: Messages)
+
+@main(Messages("place.list.title"), user, Some("place"), Some(Messages("place.list.title"))) {
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@Messages("group.find.results")</h3>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-bordered table-hover" role="grid">
+                        <thead>
+                            <tr>
+                                <th><span data-toggle="tooltip" title="@Messages("place.table.name.explanation.name")">
+                                    @Messages("place.table.name")
+                                </span></th>
+                                <th><span data-toggle="tooltip" title="@Messages("place.table.name.explanation.minimumOrder")">
+                                    @Messages("place.table.minimumOrder")
+                                </span></th>
+                                <th><span data-toggle="tooltip" title="@Messages("place.table.explanation.deliveryCost")">
+                                    @Messages("place.table.deliveryCost")
+                                </span></th>
+                                <th><span data-toggle="tooltip" title="@Messages("place.table.explanation.url")">
+                                    @Messages("place.table.url")
+                                </span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @for(place <- places) {
+                            <tr onclick="window.location.href = '@routes.PlaceController.placeDetails(place.id)'" style="cursor: pointer">
+                                <td><a href="@routes.PlaceController.placeDetails(place.id)">@place.name</a></td>
+                                <td>@tags.currency(place.minimumOrder)</td>
+                                <td>@tags.currency(place.deliveryCost)</td>
+                                <td style="text-align: center"><a href="@place.url" target="_blank"><i class="fa fa-reply" aria-hidden="true"></i></a></td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}

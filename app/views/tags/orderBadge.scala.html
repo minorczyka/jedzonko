@@ -1,0 +1,12 @@
+@import dao.OrderDao
+@(status: Short)(implicit messages: Messages)
+
+@if(status == OrderDao.orderStarted) {
+    <span class="badge bg-green">@Messages("order.details.status.open")</span>
+} else {
+    @if(status == OrderDao.orderClosed) {
+        <span class="badge bg-orange-active">@Messages("order.details.status.closed")</span>
+    } else {
+        <span class="badge bg-blue-active">@Messages("order.details.status.finished")</span>
+    }
+}

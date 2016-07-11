@@ -1,0 +1,129 @@
+@(user: silhouette.SilhouetteUser, stats: (Int, Int, Int, Int, Option[models.GroupRow]))(implicit messages: Messages)
+
+@main(Messages("home.title"), user, Some("home")) {
+    <div class="row meals-row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-green"><i class="ion ion-arrow-up-b"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">@Messages("home.incomes")</span>
+                    <span class="info-box-number">@stats._1</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-red"><i class="ion ion-arrow-down-b"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">@Messages("home.charges")</span>
+                    <span class="info-box-number">@stats._2</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="ion ion-android-checkbox-outline"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">@Messages("home.votings")</span>
+                    <span class="info-box-number">@stats._3</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-yellow"><i class="ion ion-ios-cart"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">@Messages("home.orders")</span>
+                    <span class="info-box-number">@stats._4</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <li><a href="@routes.GroupController.listGroups">
+                                <figure class="meal-photo">
+                                    <h3>@Messages("main.menu.group.list")</h3>
+                                    <img src="@routes.Assets.versioned("images/meals/1.jpg")" alt="1-image">
+                                </figure></a>
+                            </li>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <li><a href="@routes.PlaceController.listPlaces">
+                                <figure class="meal-photo">
+                                    <h3>@Messages("main.menu.place.list")</h3>
+                                    <img src="@routes.Assets.versioned("images/meals/2.jpg")" alt="2-image">
+                                </figure></a>
+                            </li>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <li><a href="@routes.VotingController.listVotings">
+                                <figure class="meal-photo">
+                                    <h3>@Messages("main.menu.vote.list")</h3>
+                                    <img src="@routes.Assets.versioned("images/meals/3.jpg")" alt="3-image">
+                                </figure></a>
+                            </li>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <li><a href="@routes.OrderController.listOrders">
+                                <figure class="meal-photo">
+                                    <h3>@Messages("main.menu.order.list")</h3>
+                                    <img src="@routes.Assets.versioned("images/meals/4.jpg")" alt="4-image">
+                                </figure></a>
+                            </li>
+                        </div>
+                    </div>
+                    <div class="row meals-row">
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <li><a href="@routes.PaymentController.incomes">
+                                <figure class="meal-photo">
+                                    <h3>@Messages("main.menu.payment.incomes")</h3>
+                                    <img src="@routes.Assets.versioned("images/meals/5.jpg")" alt="1-image">
+                                </figure></a>
+                            </li>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <li><a href="@routes.PaymentController.charges">
+                                <figure class="meal-photo">
+                                    <h3>@Messages("main.menu.payment.charges")</h3>
+                                    <img src="@routes.Assets.versioned("images/meals/6.jpg")" alt="2-image">
+                                </figure></a>
+                            </li>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <li><a href="@routes.VotingController.listVotings">
+                                <figure class="meal-photo">
+                                    <h3>@Messages("main.menu.payment.prepaid")</h3>
+                                    <img src="@routes.Assets.versioned("images/meals/7.jpg")" alt="3-image">
+                                </figure></a>
+                            </li>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            @if(stats._5) {
+                                @stats._5.map { group =>
+                                    <li><a href="@routes.GroupController.groupDetails(group.id)">
+                                        <figure class="meal-photo">
+                                            <h3>@group.name</h3>
+                                            <img src="@routes.Assets.versioned("images/meals/8.jpg")" alt="4-image">
+                                        </figure></a>
+                                    </li>
+                                }
+                            } else {
+                                <li><a href="@routes.UserController.userDetails(user.userId)">
+                                    <figure class="meal-photo">
+                                        <h3>@Messages("main.profile")</h3>
+                                        <img src="@routes.Assets.versioned("images/meals/8.jpg")" alt="4-image">
+                                    </figure></a>
+                                </li>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,16 @@
+@(orders: Seq[models.OrderRow])
+
+<orders>
+    @for(o <- orders) {
+    <order id="@o.id">
+        <groupId>@o.groupId</groupId>
+        <authorId>@o.authorId</authorId>
+        <placeId>@o.placeId</placeId>
+        <status>@o.status</status>
+        <creationDate>@o.creationDate</creationDate>
+        <orderEnd>@o.orderEnd</orderEnd>
+        <discount>@o.discount</discount>
+        <additionalCost>@o.additionalCost</additionalCost>
+    </order>
+    }
+</orders>

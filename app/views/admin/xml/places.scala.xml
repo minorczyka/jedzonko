@@ -1,0 +1,15 @@
+@(places: Seq[models.PlaceRow])
+
+<places>
+    @for(p <- places) {
+        <place id="@p.id">
+            <groupId>@p.groupId</groupId>
+            <authorId>@p.authorId</authorId>
+            <name>@p.name</name>
+            <url>@p.url</url>
+            <minimumOrder>@p.minimumOrder</minimumOrder>
+            <deliveryCost>@p.deliveryCost</deliveryCost>
+            <isDeleted>@p.isDeleted</isDeleted>
+        </place>
+    }
+</places>

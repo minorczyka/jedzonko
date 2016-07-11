@@ -1,0 +1,96 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                               controllers.ApplicationController.index
+GET     /signIn                         controllers.ApplicationController.signIn
+GET     /signUp                         controllers.ApplicationController.signUp
+GET     /signOut                        controllers.ApplicationController.signOut
+GET     /authenticate/:provider         controllers.SocialAuthController.authenticate(provider)
+POST    /authenticate/credentials       controllers.CredentialsAuthController.authenticate
+POST    /signUp                         controllers.SignUpController.signUp
+
+GET		/reset-password					controllers.PasswordChangeController.forgotPassword
+POST	/reset-password					controllers.PasswordChangeController.handleForgotPassword
+GET		/reset-password/:token	        controllers.PasswordChangeController.resetPassword(token: String)
+POST	/reset-password/:token	        controllers.PasswordChangeController.handleResetPassword(token: String)
+
+# Groups page
+GET     /group/new                      controllers.GroupController.createGroup
+POST    /group/new                      controllers.GroupController.handleCreateGroup
+GET     /group/list                     controllers.GroupController.listGroups
+GET     /group/details/:id              controllers.GroupController.groupDetails(id: Int)
+GET     /group/join/:id                 controllers.GroupController.joinGroup(id: Int)
+POST    /group/join/:id                 controllers.GroupController.handleJoinGroup(id: Int)
+GET     /group/password/:id             controllers.GroupController.changePassword(id: Int)
+POST    /group/password/:id             controllers.GroupController.handleChangePassword(id: Int)
+GET     /group/leave/:id                controllers.GroupController.leaveGroup(id: Int)
+GET     /gorup/find                     controllers.GroupController.findGroup
+POST    /gorup/find                     controllers.GroupController.handleFindGroup
+GET     /group/kick/:gid/:uid           controllers.GroupController.kickUser(gid: Int, uid: Int)
+GET     /group/delete/:id               controllers.GroupController.deleteGroup(id: Int)
+POST    /group/delete/:id               controllers.GroupController.handleDeleteGroup(id: Int)
+
+# Places page
+GET     /place/new                      controllers.PlaceController.createPlace
+POST    /place/new                      controllers.PlaceController.handleCreatePlace
+GET     /place/list                     controllers.PlaceController.listPlaces
+GET     /place/details/:id              controllers.PlaceController.placeDetails(id: Int)
+GET     /place/edit/:id                 controllers.PlaceController.editPlace(id: Int)
+POST    /place/edit/:id                 controllers.PlaceController.handleEditPlace(id: Int)
+POST    /place/comment/:id              controllers.PlaceController.handleAddComment(id: Int)
+GET     /place/delete/:id               controllers.PlaceController.deletePlace(id: Int)
+
+# Voting page
+GET     /vote/new                       controllers.VotingController.createVoting
+POST    /vote/new                       controllers.VotingController.handleCreateVoting
+GET     /vote/list                      controllers.VotingController.listVotings
+GET     /vote/details/:id               controllers.VotingController.votingDetails(id: Int)
+GET     /vote/edit/:id                  controllers.VotingController.editVoting(id: Int)
+POST    /vote/edit/:id                  controllers.VotingController.handleEditVoting(id: Int)
+POST    /vote/vote/:id                  controllers.VotingController.handleVote(id: Int)
+GET     /vote/end/:id                   controllers.VotingController.finishVoting(id: Int)
+GET     /vote/delete/:id                controllers.VotingController.deleteVoting(id: Int)
+
+# Ordering page
+GET     /order/new                      controllers.OrderController.createOrder
+POST    /order/new                      controllers.OrderController.handleCreateOrder
+GET     /order/delete/:id               controllers.OrderController.deleteOrder(id: Int)
+GET     /order/close/:id                controllers.OrderController.closeOrder(id: Int)
+GET     /order/open/:id                 controllers.OrderController.openOrder(id: Int)
+GET     /order/list                     controllers.OrderController.listOrders
+GET     /order/details/:id              controllers.OrderController.getOrderDetails(id: Int)
+POST    /order/comment/:id              controllers.OrderController.handleAddMessage(id: Int)
+POST    /order/user/add/:id             controllers.OrderController.handleAddUserOrder(id: Int)
+GET     /order/user/delete/:id          controllers.OrderController.deleteUserOrder(id: Int)
+GET     /order/finalize/:id             controllers.OrderController.finalizeOrder(id: Int)
+GET     /order/find/:id                 controllers.OrderController.findOrder(id: Int)
+
+# Payment page
+GET     /payment/incomes                controllers.PaymentController.incomes
+GET     /payment/charges                controllers.PaymentController.charges
+GET     /payment/prepaid                controllers.PaymentController.prepaid
+
+# User page
+GET     /user/:id                       controllers.UserController.userDetails(id: Int)
+POST    /user/prepaid/:id               controllers.UserController.handlePrepaid(id: Int)
+
+# Admin page
+GET     /admin/reports                  controllers.ReportController.reports
+GET     /admin/reports/users            controllers.ReportController.allUsers
+GET     /admin/reports/groups           controllers.ReportController.allGroups
+GET     /admin/reports/places           controllers.ReportController.allPlaces
+GET     /admin/reports/votings          controllers.ReportController.allVotings
+GET     /admin/reports/orders          controllers.ReportController.allOrders
+
+# API
+GET     /api/place/list/:id             controllers.ApiController.getGroupPlaces(id: Int)
+POST    /api/order/save                 controllers.ApiController.saveOrder
+POST    /api/order/submit               controllers.ApiController.submitOrder
+GET     /api/payment/accept/:id         controllers.ApiController.acceptIncome(id: Int)
+GET     /api/payment/prepaid/:id        controllers.ApiController.payWithPrepaid(id: Int)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
+GET     /webjars/*file                  controllers.WebJarAssets.at(file)

@@ -1,0 +1,55 @@
+@(user: silhouette.SilhouetteUser, orders: Seq[(models.GroupRow, models.OrderRow, models.UserRow, models.PlaceRow)])(implicit messages: Messages)
+
+@main(Messages("order.list.title"), user, Some("order"), Some(Messages("order.list.title"))) {
+    <div class="col-lg-8 col-lg-offset-2">
+        <div class="box box-primary">
+            <div class="box-body">
+                <table id="orders-table" class="table table-bordered table-hover" role="grid">
+                    <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th><span data-toggle="tooltip" title="@Messages("order.table.explanation.groupName")">
+                                @Messages("order.table.groupName")
+                            </span></th>
+                            <th><span data-toggle="tooltip" title="@Messages("order.table.explanation.placeName")">
+                                @Messages("order.table.placeName")
+                            </span></th>
+                            <th><span data-toggle="tooltip" title="@Messages("order.table.explanation.orderEnd")">
+                                @Messages("order.table.orderEnd")
+                            </span></th>
+                            <th><span data-toggle="tooltip" title="@Messages("order.table.explanation.author")">
+                                @Messages("order.table.author")
+                            </span></th>
+                            <th><span data-toggle="tooltip" title="@Messages("order.table.explanation.orderCreated")">
+                                @Messages("order.table.orderCreated")
+                            </span></th>
+                            <th><span data-toggle="tooltip" title="@Messages("vote.table.explanation.votingStatus")">
+                                @Messages("vote.table.votingStatus")
+                            </span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for(order <- orders.sortWith((a, b) => {
+                        if (a._2.status == b._2.status) {
+                            a._2.creationDate.getTime > b._2.creationDate.getTime
+                        } else {
+                            a._2.status < b._2.status
+                        }
+                    })) {
+                        <tr onclick="window.location.href = '@routes.OrderController.getOrderDetails(order._2.id)'" style="cursor: pointer">
+                            <td><a href="@routes.OrderController.getOrderDetails(order._2.id)">@order._2.id</a></td>
+                            <td>@order._1.name</td>
+                            <td><a href="@routes.PlaceController.placeDetails(order._4.id)">@order._4.name</a></td>
+                            <td>@order._2.orderEnd.map(x => x.format("dd-MM-yyyy HH:mm"))</td>
+                            <td>@order._3.fullName</td>
+                            <td>@order._2.creationDate.format("dd-MM-yyyy HH:mm")</td>
+                            <td style="text-align: center">@tags.orderBadge(order._2.status)</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="@routes.Assets.versioned("js/order.list.js")"></script>
+}

@@ -1,0 +1,21 @@
+@(user: silhouette.SilhouetteUser, form: Form[forms.FindGroupForm.Data])(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-3", "col-md-9") }
+
+@main(Messages("group.find.title"), user, Some("group"), Some(Messages("group.find.title"))) {
+    <div class="col-lg-6 col-lg-offset-3">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">@Messages("group.find.search")</h3>
+            </div>
+            <div class="box-body">
+                @tags.alertFromForm(form)
+                @b3.form(routes.GroupController.handleFindGroup) {
+                    @helper.CSRF.formField
+                    @b3.text(form("groupName"), '_label -> Messages("group.find.name"), 'placeholder -> Messages("group.find.name"))
+                    @b3.submit('class -> "btn btn-primary"){ @Messages("group.find.find") }
+                }
+            </div>
+        </div>
+    </div>
+}

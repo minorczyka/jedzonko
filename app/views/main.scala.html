@@ -1,0 +1,126 @@
+@import dao.UserDao
+@(title: String, user: silhouette.SilhouetteUser, menu: Option[String] = None, header: Option[String] = None, description: Option[String] = None)(content: Html)(implicit messages: Messages)
+
+@layout(title) {
+<div class="wrapper">
+    <header class="main-header">
+        <a href="@routes.ApplicationController.index" class="logo">
+            <span class="logo-mini"><strong>@Messages("app.name.mini")</strong></span>
+            <span class="logo-lg"><strong>@Messages("app.name")</strong></span>
+        </a>
+        <nav class="navbar navbar-static-top" role="navigation">
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">@Messages("main.nav.toggle")</span>
+            </a>
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="@user.avatarURL.getOrElse(routes.Assets.versioned("images/silhouette.png"))" class="user-image" alt="User Image">
+                            <span class="hidden-xs">@user.fullName</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="user-header">
+                                <img src="@user.avatarURL.getOrElse(routes.Assets.versioned("images/silhouette.png"))" class="img-circle" alt="User Image">
+                                <p>
+                                    @user.fullName
+                                    <small>@user.email</small>
+                                </p>
+                            </li>
+                            <li class="user-footer">
+                                <div class="pull-left">
+                                    <a href="@routes.UserController.userDetails(user.userId)" class="btn btn-default btn-flat">@Messages("main.profile")</a>
+                                </div>
+                                <div class="pull-right">
+                                    <a href="@routes.ApplicationController.signOut" class="btn btn-default btn-flat">@Messages("main.sign.out")</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <div class="user-panel">
+                <div class="pull-left image">
+                    <img src="@user.avatarURL.getOrElse(routes.Assets.versioned("images/silhouette.png"))" class="img-circle" alt="User Image">
+                </div>
+                <div class="pull-left info">
+                    <p>@user.fullName</p>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="header">@Messages("main.nav.header")</li>
+                @tags.sideMenuSingle("home", menu) {
+                    <a href="@routes.ApplicationController.index"><i class="fa fa-home fa-fw"></i> <span>@Messages("main.menu.home")</span></a>
+                }
+                @tags.sideMenuMulti("group", menu) {
+                    <a href="#"><i class="fa fa-users fa-fw"></i> <span>@Messages("main.menu.group")</span><i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                        <li><a href="@routes.GroupController.findGroup"><i class="fa fa-search fa-fw"></i> @Messages("main.menu.group.find")</a></li>
+                        <li><a href="@routes.GroupController.createGroup"><i class="fa fa-plus fa-fw"></i> @Messages("main.menu.group.new")</a></li>
+                        <li><a href="@routes.GroupController.listGroups"><i class="fa fa-list fa-fw"></i> @Messages("main.menu.group.list")</a></li>
+                    </ul>
+                }
+                @tags.sideMenuMulti("place", menu) {
+                    <a href="#"><i class="fa fa-map-marker fa-fw"></i> <span>@Messages("main.menu.place")</span><i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                        <li><a href="@routes.PlaceController.createPlace"><i class="fa fa-plus fa-fw"></i> @Messages("main.menu.place.new")</a></li>
+                        <li><a href="@routes.PlaceController.listPlaces"><i class="fa fa-list fa-fw"></i> @Messages("main.menu.place.list")</a></li>
+                    </ul>
+                }
+                @tags.sideMenuMulti("vote", menu) {
+                    <a href="#"><i class="fa fa-check-square-o fa-fw"></i> <span>@Messages("main.menu.vote")</span><i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                        <li><a href="@routes.VotingController.createVoting"><i class="fa fa-plus fa-fw"></i> @Messages("main.menu.vote.new")</a></li>
+                        <li><a href="@routes.VotingController.listVotings"><i class="fa fa-list fa-fw"></i> @Messages("main.menu.vote.list")</a></li>
+                    </ul>
+                }
+                @tags.sideMenuMulti("order", menu) {
+                    <a href="#"><i class="fa fa-shopping-cart fa-fw"></i> <span>@Messages("main.menu.order")</span><i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                        <li><a href="@routes.OrderController.createOrder"><i class="fa fa-plus fa-fw"></i> @Messages("main.menu.order.new")</a></li>
+                        <li><a href="@routes.OrderController.listOrders"><i class="fa fa-list fa-fw"></i> @Messages("main.menu.order.list")</a></li>
+                    </ul>
+                }
+                @tags.sideMenuMulti("payment", menu) {
+                    <a href="#"><i class="fa fa-money fa-fw"></i> <span>@Messages("main.menu.payment")</span><i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                        <li><a href="@routes.PaymentController.incomes"><i class="fa fa-arrow-up fa-fw"></i>@Messages("main.menu.payment.incomes")</a></li>
+                        <li><a href="@routes.PaymentController.charges"><i class="fa fa-arrow-down fa-fw"></i> @Messages("main.menu.payment.charges")</a></li>
+                        <li><a href="@routes.PaymentController.prepaid"><i class="fa fa-paypal fa-fw"></i> @Messages("main.menu.payment.prepaid")</a></li>
+                    </ul>
+                }
+                @if(user.privileges == UserDao.admin) {
+                    @tags.sideMenuSingle("admin", menu) {
+                        <a href="@routes.ReportController.reports"><i class="fa fa-lock fa-fw"></i> <span>@Messages("main.menu.admin")</span></a>
+                    }
+                }
+            </ul>
+        </section>
+    </aside>
+    <div class="content-wrapper">
+        @if(header) {
+            <section class="content-header">
+                <h1>
+                    @header
+                    @if(description) {
+                        <small>@description</small>
+                    }
+                </h1>
+            </section>
+        }
+        <section class="content">
+            @content
+        </section>
+    </div>
+</div>
+<footer class="main-footer">
+    <div class="pull-right hidden-xs">
+        Anything you want
+    </div>
+    <strong>Copyright &copy; 2015 <a href="#">Company</a>.</strong> All rights reserved.
+</footer>
+}

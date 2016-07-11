@@ -1,0 +1,168 @@
+@import dao.OrderDao
+@(user: silhouette.SilhouetteUser, order: models.OrderRow, place: models.PlaceRow, members: Map[Int, models.UserRow],
+        userToOrder: Seq[(UserRow, UserToOrderRow)], orderMessages: Seq[models.OrderMessageRow],
+        form: Form[forms.CreateUserOrderForm.Data])(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-3", "col-md-6") }
+
+@main(Messages("order.details.title"), user, Some("order"), Some(Messages("order.details.title"))) {
+    <div class="row">
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <a href="@routes.PlaceController.placeDetails(place.id)">
+                        <h3 class="profile-username text-center">@place.name</h3>
+                    </a>
+                    <ul class="list-group list-group-unbordered">
+                        @place.minimumOrder.map { minimumOrder =>
+                        <li class="list-group-item">
+                            <b>@Messages("place.create.minimum")</b><a class="pull-right">@tags.currency(Some(minimumOrder))</a>
+                        </li>
+                        }
+                        @order.discount.map { discount =>
+                        <li class="list-group-item">
+                            <b>@Messages("order.details.discount")</b><a class="pull-right">@{discount}%</a>
+                        </li>
+                        }
+                        @order.additionalCost.map { additionalCost =>
+                        <li class="list-group-item">
+                            <b>@Messages("order.details.additional.cost")</b><a class="pull-right">@tags.currency(Some(additionalCost))</a>
+                        </li>
+                        }
+                        @order.orderEnd.map { orderEnd =>
+                        <li class="list-group-item">
+                            <b>@Messages("order.details.ends")</b><a class="pull-right">@orderEnd.format("dd-MM-yyyy HH:mm")</a>
+                        </li>
+                        }
+                        <li class="list-group-item">
+                            <b>@Messages("order.details.status")</b>
+                            @tags.orderBadge(order.status)
+                        </li>
+                        <li class="list-group-item">
+                            <b>@Messages("order.details.author")</b><a href="@routes.UserController.userDetails(order.authorId)" class="pull-right">@members(order.authorId).fullName</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>@Messages("order.details.creation.date")</b><a class="pull-right">@order.creationDate.format("dd-MM-yyyy HH:mm")</a>
+                        </li>
+                    </ul>
+                    <a href="@place.url" target="_blank" class="btn btn-primary btn-block"><b>@Messages("order.details.open.web")</b></a>
+                </div>
+            </div>
+            @if(order.authorId == user.userId) {
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">@Messages("order.details.manage")</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="btn-group btn-group-justified">
+                            @if(order.status == OrderDao.orderStarted) {
+                                <a href="@routes.OrderController.closeOrder(order.id)" class="btn btn-info"><b>@Messages("order.details.close")</b></a>
+                            } else {
+                                @if(order.status == OrderDao.orderClosed) {
+                                    <a href="@routes.OrderController.finalizeOrder(order.id)" class="btn btn-info"><b>@Messages("order.details.finish")</b></a>
+                                    <a href="@routes.OrderController.openOrder(order.id)" class="btn btn-info"><b>@Messages("order.details.open")</b></a>
+                                }
+                            }
+                            <a role="button" class="btn btn-info" data-toggle="modal" data-target="#deleteModal"><b>@Messages("order.details.delete")</b></a>
+                        </div>
+                    </div>
+                </div>
+            }
+            @tags.chat(orderMessages.map(c => (UserRow(order.authorId, "", "", fullName = members(order.authorId).fullName, privileges = 0), c.message, c.creationDate)),
+                Messages("order.details.messages"), user, if(order.authorId == user.userId) Some(routes.OrderController.handleAddMessage(order.id)) else None)
+        </div>
+        <div class="col-md-8">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">@Messages("order.details.orders")</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-striped">
+                        <tbody><tr>
+                            <th style="width: 10px">#</th>
+                            <th>@Messages("order.details.full.name")</th>
+                            <th>@Messages("order.details.order")</th>
+                            <th>@Messages("order.details.additional.info")</th>
+                            <th>@Messages("order.details.cost")</th>
+                            @if(order.status == OrderDao.orderFinished) {
+                                <th style="width: 10px">@Messages("order.details.status")</th>
+                            }
+                        </tr>
+                            @for((uo, i) <- userToOrder.zipWithIndex) {
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td><a href="@routes.UserController.userDetails(uo._1.id)">@uo._1.fullName</a></td>
+                                <td>@uo._2.subject</td>
+                                <td>@uo._2.additionalInfo.map(x => x)</td>
+                                <td>@tags.currency(uo._2.cost)</td>
+                                @if(order.status == OrderDao.orderFinished) {
+                                    <td style="text-align: center">@tags.userOrderBadge(uo._2.status)</td>
+                                }
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="box box-primary" id="your-order-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@Messages("order.details.your.order")</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-striped" id="your-order-table">
+                        <tbody><tr>
+                            <th style="width: 10px">#</th>
+                            <th>@Messages("order.details.full.name")</th>
+                            <th>@Messages("order.details.order")</th>
+                            <th>@Messages("order.details.additional.info")</th>
+                            <th>@Messages("order.details.cost")</th>
+                            @if(order.status == OrderDao.orderStarted) {
+                                <th style="width: 10px"></th>
+                            } else {
+                                @if(order.status == OrderDao.orderFinished) {
+                                    <th style="width: 10px">@Messages("order.details.status")</th>
+                                }
+                            }
+                        </tr>
+                            @for((uo, i) <- userToOrder.filter(o => o._1.id == user.userId).zipWithIndex) {
+                                <tr>
+                                    <td>@(i + 1)</td>
+                                    <td><a href="@routes.UserController.userDetails(uo._1.id)">@uo._1.fullName</a></td>
+                                    <td>@uo._2.subject</td>
+                                    <td>@uo._2.additionalInfo.map(x => x)</td>
+                                    <td>@tags.currency(uo._2.cost)</td>
+                                    @if(order.status == OrderDao.orderStarted) {
+                                        <td><a href="@routes.OrderController.deleteUserOrder(uo._2.id)"><i class="fa fa-times"></i></a></td>
+                                    } else {
+                                        @if(order.status == OrderDao.orderFinished) {
+                                            <td style="text-align: center">@tags.userOrderBadge(uo._2.status)</td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @if(order.status == OrderDao.orderStarted) {
+                    <div class="box-footer">
+                        @tags.alertFromForm(form)
+                        @b3.form(routes.OrderController.handleAddUserOrder(order.id)) {
+                            @helper.CSRF.formField
+                            @b3.text(form("subject"), '_label -> Messages("order.details.order"), 'placeholder -> Messages("order.details.order"))
+                            @b3.text(form("additionalInfo"), '_label -> Messages("order.details.additional.info"), 'placeholder -> Messages("order.details.additional.info"))
+                            @b3.number(form("cost"), '_label -> Messages("order.details.cost"), 'placeholder -> Messages("order.details.cost"), 'step -> 0.01)
+                            @b3.submit('class -> "btn btn-primary") { @Messages("order.details.add") }
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @tags.modal("deleteModal", Messages("order.details.delete"), Messages("order.details.delete.message"), routes.OrderController.deleteOrder(order.id))
+}

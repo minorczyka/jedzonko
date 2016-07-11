@@ -1,0 +1,23 @@
+@(user: silhouette.SilhouetteUser, groupForm: Form[forms.CreateGroupForm.Data])(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-3", "col-md-9") }
+
+@main(Messages("group.create.title"), user, Some("group"), Some(Messages("group.create.title"))) {
+    <div class="col-lg-6 col-lg-offset-3">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">@Messages("group.create.new")</h3>
+            </div>
+            <div class="box-body">
+                @tags.alertFromForm(groupForm)
+                @b3.form(routes.GroupController.handleCreateGroup) {
+                    @helper.CSRF.formField
+                    @b3.text(groupForm("groupName"), '_label -> Messages("group.create.name"), 'placeholder -> Messages("group.create.name"))
+                    @b3.password(groupForm("groupPassword1"), '_label -> Messages("auth.password"), 'placeholder -> Messages("auth.password"))
+                    @b3.password(groupForm("groupPassword2"), '_label -> Messages("auth.repassword"), 'placeholder -> Messages("auth.repassword"))
+                    @b3.submit('class -> "btn btn-primary"){ @Messages("group.create.create") }
+                }
+            </div>
+        </div>
+    </div>
+}

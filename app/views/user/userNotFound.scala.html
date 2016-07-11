@@ -1,0 +1,10 @@
+@(user: silhouette.SilhouetteUser)(implicit messages: Messages)
+
+@main(Messages("user.not.found"), user, None) {
+  <div class="col-lg-6 col-lg-offset-3">
+    <div class="row">
+      <hr class="col-md-12" />
+      <h2 class="col-md-8">@Messages("user.not.found")</h2>
+    </div>
+  </div>
+}

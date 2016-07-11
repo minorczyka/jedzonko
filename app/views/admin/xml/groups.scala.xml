@@ -1,0 +1,12 @@
+@(groups: Seq[models.GroupRow])
+
+<groups>
+@for(g <- groups) {
+    <group id="@g.id">
+        <owner>@g.ownerId</owner>
+        <name>@g.name</name>
+        <password>@g.password</password>
+        <creationDate>@g.creationDate</creationDate>
+    </group>
+}
+</groups>

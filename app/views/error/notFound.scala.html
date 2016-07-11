@@ -1,0 +1,13 @@
+@(request: RequestHeader)(implicit messages: Messages)
+
+@layout(Messages("auth.forget.title"), Some("login-page")) {
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="@routes.ApplicationController.index"><strong>@Messages("app.name")</strong></a>
+        </div>
+        <div class="login-box-body">
+            <h2>@Messages("error.notfound.title")</h2>
+            <p>@Messages("error.notfound.text", request.method + " " + request.uri)</p>
+        </div>
+    </div>
+}

@@ -1,0 +1,8 @@
+@import dao.OrderDao
+@(status: Short)(implicit messages: Messages)
+
+@if(status == OrderDao.orderPayed) {
+    <span class="badge bg-green">@Messages("order.details.status.payed")</span>
+} else {
+    <span class="badge bg-red">@Messages("order.details.status.not.payed")</span>
+}

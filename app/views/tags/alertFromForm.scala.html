@@ -1,0 +1,5 @@
+@(form: Form[_])(implicit messages: Messages)
+
+@if(form.hasGlobalErrors) {
+    @form.globalErrors.map { error => @alert(error.message, "error") }
+}

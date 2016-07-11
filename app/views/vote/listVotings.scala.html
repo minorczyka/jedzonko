@@ -1,0 +1,65 @@
+@import dao.VotingDao
+@(user: silhouette.SilhouetteUser, votings: Seq[(models.GroupRow, models.VotingRow, models.UserRow)])(implicit messages: Messages)
+
+@main(Messages("vote.list.title"), user, Some("vote"), Some(Messages("vote.list.title"))) {
+    <div class="row" style="margin-bottom: 50px;">
+        <div class="col-lg-8 col-lg-offset-2">
+        @for(group <- votings.groupBy(v => v._1)) {
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@group._1.name</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered table-hover" role="grid">
+                        <thead>
+                            <tr>
+                                <th style="width: 10px">#</th>
+                                <th><span data-toggle="tooltip" title="@Messages("vote.table.explanation.creationDate")">
+                                    @Messages("vote.table.creationDate")
+                                </span></th>
+                                <th><span data-toggle="tooltip" title="@Messages("vote.table.explanation.author")">
+                                    @Messages("vote.table.author")
+                                </span></th>
+                                <th><span data-toggle="tooltip" title="@Messages("vote.table.explanation.votingEnd")">
+                                    @Messages("vote.table.votingEnd")
+                                </span></th>
+                                <th><span data-toggle="tooltip" title="@Messages("vote.table.explanation.orderEnd")">
+                                    @Messages("vote.table.orderEnd")
+                                </span></th>
+                                <th><span data-toggle="tooltip" title="@Messages("vote.table.explanation.votingStatus")">
+                                    @Messages("vote.table.votingStatus")
+                                </span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @for(voting <- group._2.sortWith((a, b) => {
+                            if (a._2.status == b._2.status) {
+                                a._2.creationDate.getTime > b._2.creationDate.getTime
+                            } else {
+                                a._2.status < b._2.status
+                            }
+                        })) {
+                            <tr onclick="window.location.href = '@routes.VotingController.votingDetails(voting._2.id)'" style="cursor: pointer">
+                                <td><a href="@routes.VotingController.votingDetails(voting._2.id)">@voting._2.id</a></td>
+                                <td>@voting._2.creationDate.format("dd-MM-yyyy HH:mm")</td>
+                                <td>@voting._3.fullName</td>
+                                <td>@voting._2.votingEnd.map(x => x.format("dd-MM-yyyy HH:mm"))</td>
+                                <td>@voting._2.orderEnd.map(x => x.format("dd-MM-yyyy HH:mm"))</td>
+                                <td style="text-align: center">
+                                    @if(voting._2.status == VotingDao.votingStarted) {
+                                        <span class="badge bg-green">@Messages("vote.details.status.open")</span>
+                                    } else {
+                                        <span class="badge bg-blue-active">@Messages("vote.details.status.finished")</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        </div>
+    </div>
+    <script src="@routes.Assets.versioned("js/voting.list.js")"></script>
+}

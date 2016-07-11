@@ -1,0 +1,9 @@
+@(value: String, menu: Option[String])(content: Html)
+
+@if(Some(value) == menu) {
+  <li class="active">
+} else {
+  <li>
+  }
+@content
+</li>

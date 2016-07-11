@@ -1,0 +1,13 @@
+@(votings: Seq[models.VotingRow])
+
+<votings>
+    @for(v <- votings) {
+        <voting id="@v.id">
+            <groupId>@v.groupId</groupId>
+            <authorId>@v.authorId</authorId>
+            <creationDate>@v.creationDate</creationDate>
+            <votingEnd>@v.votingEnd</votingEnd>
+            <orderEnd>@v.orderEnd</orderEnd>
+        </voting>
+    }
+</votings>

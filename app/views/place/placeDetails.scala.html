@@ -1,0 +1,53 @@
+@(user: silhouette.SilhouetteUser, place: models.PlaceRow, group: models.GroupRow, placeOwner: silhouette.SilhouetteUser,
+        comments: Seq[(models.UserRow, models.PlaceCommentRow)])(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{ b3.vertical.fieldConstructor }
+
+@main(Messages("place.details.title"), user, Some("place"), Some(Messages("place.details.title"))) {
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">@Messages("place.details.info")</h3>
+                </div>
+                <div class="box-body">
+                    <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                            <b>@Messages("place.details.name")</b><a class="pull-right">@place.name</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>@Messages("place.details.group")</b><a class="pull-right">@group.name</a>
+                        </li>
+                        @place.url.map { url =>
+                        <li class="list-group-item">
+                            <b>@Messages("place.details.website")</b><a href="@place.url" target="_blank" class="pull-right">@place.url</a>
+                        </li>
+                        }
+                        @place.minimumOrder.map { minimumOrder =>
+                            <li class="list-group-item">
+                                <b>@Messages("place.details.min.order")</b><a class="pull-right">@tags.currency(place.minimumOrder)</a>
+                            </li>
+                        }
+                        @place.deliveryCost.map { deliveryCost =>
+                            <li class="list-group-item">
+                                <b>@Messages("place.details.delivery")</b><a class="pull-right">@tags.currency(place.deliveryCost)</a>
+                            </li>
+                        }
+                        <li class="list-group-item">
+                            <b>@Messages("place.details.created.by")</b><a href="@routes.UserController.userDetails(placeOwner.userId)" class="pull-right">@placeOwner.fullName</a>
+                        </li>
+                    </ul>
+                    @if(place.authorId == user.userId || group.ownerId == user.userId) {
+                        <a href="@routes.PlaceController.editPlace(place.id)" role="button" class="btn btn-default">@Messages("place.details.edit")</a>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">@Messages("place.details.delete")</button>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            @tags.chat(comments.sortBy(x => x._2.creationDate.getTime).map(s => (s._1, s._2.comment, s._2.creationDate)),
+                Messages("place.details.comments"), user, Some(routes.PlaceController.handleAddComment(place.id)), 500)
+        </div>
+    </div>
+    @tags.modal("deleteModal", Messages("place.details.delete"), Messages("place.details.delete.message"), routes.PlaceController.deletePlace(place.id))
+}

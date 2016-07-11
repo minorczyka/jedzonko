@@ -1,0 +1,92 @@
+@(user: silhouette.SilhouetteUser, order: models.OrderRow, members: Map[Int, models.UserRow], userToOrder: Seq[(UserRow, UserToOrderRow)])(implicit request: RequestHeader, messages: Messages)
+
+@main(Messages("order.finalize.title"), user, Some("order"), Some(Messages("order.finalize.title"))) {
+    <div class="row">
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">@Messages("order.finalize.info")</h3>
+                </div>
+                <div class="box-body">
+                    <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                            <b>@Messages("order.details.discount")</b>
+                            <div class="pull-right">
+                                <input id="discount" class="value" type="number" min="0" max="100" value="@order.discount.getOrElse(0.0)" style="width: 70px">%
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <b>@Messages("order.details.additional.cost")</b>
+                            <div class="pull-right">
+                                <input id="additional-cost" class="value" type="number" min="0" step="0.01" value="@order.additionalCost.getOrElse(0.0)" style="width: 70px">zł
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="overlay" hidden>
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">@Messages("order.finalize.summary")</h3>
+                </div>
+                <div class="box-body">
+                    <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                            <b>Order value</b><div class="pull-right"><span id="order-sum"></span> zł</div>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Discount</b><div class="pull-right"><span id="order-discount"></span> zł</div>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Additional costs</b><div class="pull-right"><span id="order-additional"></span> zł</div>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Cost<div class="pull-right"><span id="order-cost"></span> zł</div></b>
+                        </li>
+                    </ul>
+                    <button id="save" class="btn btn-primary btn-block"><b>@Messages("order.finalize.save")</b></button>
+                    <button id="submit" class="btn btn-primary btn-block"><b>@Messages("order.finalize.submit")</b></button>
+                </div>
+                <div class="overlay" hidden>
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">@Messages("order.details.orders")</h3>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-striped">
+                        <tbody><tr>
+                            <th style="width: 10px">#</th>
+                            <th>@Messages("order.details.full.name")</th>
+                            <th>@Messages("order.details.order")</th>
+                            <th>@Messages("order.details.additional.info")</th>
+                            <th>@Messages("order.details.cost")</th>
+                        </tr>
+                            @for((uo, i) <- userToOrder.zipWithIndex) {
+                                <tr>
+                                    <td>@(i + 1)</td>
+                                    <td>@uo._1.fullName</td>
+                                    <td>@uo._2.subject</td>
+                                    <td>@uo._2.additionalInfo.map(x => x)</td>
+                                    <td><input class="value" type="number" min="0" step="0.01" value="@uo._2.cost"></td>
+                                    <td class="id" hidden>@uo._2.id</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="overlay" hidden>
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="order-id" hidden>@order.id</div>
+    <script src="@routes.Assets.versioned("js/order.finalize.js")"></script>
+}
