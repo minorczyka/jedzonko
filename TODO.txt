@@ -1,4 +1,3 @@
--wyświetlanie sumy zamówienia
 -edytowanie zamówień
 -przechodzenie do najnowszego zamówienia/głosowania
 

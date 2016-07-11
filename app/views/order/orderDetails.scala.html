@@ -103,6 +103,15 @@
                                 }
                             </tr>
                             }
+                            @if(userToOrder.exists(x => x._2.cost.isDefined)) {
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>@tags.currency(Some(userToOrder.filter(x => x._2.cost.isDefined).map(x => x._2.cost.get).sum))</b></td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
