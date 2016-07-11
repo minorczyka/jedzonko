@@ -1,0 +1,7 @@
+-wyświetlanie sumy zamówienia
+-przekirowanie po zalogowaniu
+-edytowanie zamówień
+-przechodzenie do najnowszego zamówienia/głosowania
+
+bugi:
+-krzywy layout

@@ -2,54 +2,56 @@
 @(user: silhouette.SilhouetteUser, charges: Seq[(models.UserRow, models.UserToOrderRow, models.OrderRow)])(implicit messages: Messages)
 
 @main(Messages("payment.charges.title"), user, Some("payment"), Some(Messages("payment.charges.title"))) {
-    <div class="col-lg-6 col-lg-offset-3">
-        <div class="box box-primary">
-            <div class="box-body">
-                <table id="charges-table" class="table table-bordered table-hover" role="grid">
-                    <thead>
-                        <tr>
-                            <th style="width: 10px">#</th>
-                            <th><span data-toggle="tooltip" title="@Messages("payment.income.explanation.order")">
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <table id="charges-table" class="table table-bordered table-hover" role="grid">
+                        <thead>
+                            <tr>
+                                <th style="width: 10px">#</th>
+                                <th><span data-toggle="tooltip" title="@Messages("payment.income.explanation.order")">
                                 @Messages("payment.income.order")
-                            </span></th>
-                            <th><span data-toggle="tooltip" title="@Messages("payment.income.explanation.user")">
+                                </span></th>
+                                <th><span data-toggle="tooltip" title="@Messages("payment.income.explanation.user")">
                                 @Messages("payment.income.user")
-                            </span></th>
-                            <th><span data-toggle="tooltip" title="@Messages("payment.income.explanation.cost")">
+                                </span></th>
+                                <th><span data-toggle="tooltip" title="@Messages("payment.income.explanation.cost")">
                                 @Messages("payment.income.cost")
-                            </span></th>
-                            <th><span data-toggle="tooltip" title="@Messages("payment.income.explanation.status")">
+                                </span></th>
+                                <th><span data-toggle="tooltip" title="@Messages("payment.income.explanation.status")">
                                 @Messages("payment.income.status")
-                            </span></th>
-                            <th><span data-toggle="tooltip" title="@Messages("payment.charges.explanation.prepaid")">
-                            @Messages("payment.charges.prepaid")
-                            </span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @for((charge, i) <- charges.sortWith((a, b) => {
-                        if (a._2.status == b._2.status) {
-                            a._3.creationDate.getTime > b._3.creationDate.getTime
-                        } else {
-                            a._2.status < b._2.status
-                        }
-                    }).zipWithIndex) {
-                        <tr>
-                            <td>@{i + 1}</td>
-                            <td><a href="@routes.OrderController.getOrderDetails(charge._3.id)">@charge._3.creationDate.format("dd-MM-yyyy")</a></td>
-                            <td><a href="@routes.UserController.userDetails(charge._1.id)">@charge._1.fullName</a></td>
-                            <td>@tags.currency(charge._2.cost)</td>
-                            <td style="text-align: center">@tags.userOrderBadge(charge._2.status)</td>
-                            <td style="text-align: center">
-                            @if(charge._2.status == OrderDao.orderNotPayed) {
-                                <a class="charges-prepaid" charge-id="@charge._2.id" href="#"><i class="fa fa-check-circle fa-lg" aria-hidden="true"></i></a>
+                                </span></th>
+                                <th><span data-toggle="tooltip" title="@Messages("payment.charges.explanation.prepaid")">
+                                @Messages("payment.charges.prepaid")
+                                </span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @for((charge, i) <- charges.sortWith((a, b) => {
+                            if (a._2.status == b._2.status) {
+                                a._3.creationDate.getTime > b._3.creationDate.getTime
+                            } else {
+                                a._2.status < b._2.status
                             }
-                            </td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-                <div id="payed-text" hidden>@Messages("order.details.status.payed")</div>
+                        }).zipWithIndex) {
+                            <tr>
+                                <td>@{i + 1}</td>
+                                <td><a href="@routes.OrderController.getOrderDetails(charge._3.id)">@charge._3.creationDate.format("dd-MM-yyyy")</a></td>
+                                <td><a href="@routes.UserController.userDetails(charge._1.id)">@charge._1.fullName</a></td>
+                                <td>@tags.currency(charge._2.cost)</td>
+                                <td style="text-align: center">@tags.userOrderBadge(charge._2.status)</td>
+                                <td style="text-align: center">
+                                @if(charge._2.status == OrderDao.orderNotPayed) {
+                                    <a class="charges-prepaid" charge-id="@charge._2.id" href="#"><i class="fa fa-check-circle fa-lg" aria-hidden="true"></i></a>
+                                }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                    <div id="payed-text" hidden>@Messages("order.details.status.payed")</div>
+                </div>
             </div>
         </div>
     </div>

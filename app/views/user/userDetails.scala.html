@@ -4,42 +4,44 @@
 @implicitFieldConstructor = @{ b3.vertical.fieldConstructor }
 
 @main(Messages("user.details.title"), user, None, Some(Messages("user.details.title"))) {
-    <div class="col-lg-4 col-lg-offset-4">
-        <div class="box box-primary">
-            <div class="box-body box-profile">
-                <img class="profile-user-img img-responsive img-circle" src="@userDetails.avatarUrl.getOrElse(routes.Assets.versioned("images/silhouette.png"))" alt="User profile picture">
-                <h3 class="profile-username text-center">@userDetails.fullName</h3>
-                <p class="text-muted text-center">@userDetails.email</p>
-                <ul class="list-group list-group-unbordered">
-                    <li class="list-group-item">
-                        <i class="fa fa-users fa-fw"></i> <b>@Messages("user.details.groups")</b><a class="pull-right">@stats._1</a>
-                    </li>
-                    <li class="list-group-item">
-                        <i class="fa fa-map-marker fa-fw"></i> <b>@Messages("user.details.places")</b><a class="pull-right">@stats._2</a>
-                    </li>
-                    <li class="list-group-item">
-                        <i class="fa fa-check-square-o fa-fw"></i> <b>@Messages("user.details.votings")</b><a class="pull-right">@stats._3</a>
-                    </li>
-                    <li class="list-group-item">
-                        <i class="fa fa-shopping-cart fa-fw"></i> <b>@Messages("user.details.orders")</b><a class="pull-right">@stats._4</a>
-                    </li>
-                    @stats._5.map { balance =>
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-4">
+            <div class="box box-primary">
+                <div class="box-body box-profile">
+                    <img class="profile-user-img img-responsive img-circle" src="@userDetails.avatarUrl.getOrElse(routes.Assets.versioned("images/silhouette.png"))" alt="User profile picture">
+                    <h3 class="profile-username text-center">@userDetails.fullName</h3>
+                    <p class="text-muted text-center">@userDetails.email</p>
+                    <ul class="list-group list-group-unbordered">
                         <li class="list-group-item">
-                            <i class="fa fa-money fa-fw"></i> <b>@Messages("user.details.prepaid")</b><a class="pull-right">
-                            @tags.currency(Some(balance))</a>
+                            <i class="fa fa-users fa-fw"></i> <b>@Messages("user.details.groups")</b><a class="pull-right">@stats._1</a>
                         </li>
-                    }
-                </ul>
-                @if(userDetails.id != user.userId) {
-                    @tags.alertFromForm(form)
-                    @b3.form(routes.UserController.handlePrepaid(userDetails.id)) {
-                        @helper.CSRF.formField
-                        @b3.number(form("amount"), '_label -> Messages("user.details.amount"), 'placeholder -> Messages("user.details.amount"), 'step -> 0.01, 'min -> 0.01)
-                        @b3.submit('class -> "btn btn-primary") {
-                            @Messages("user.details.accept")
+                        <li class="list-group-item">
+                            <i class="fa fa-map-marker fa-fw"></i> <b>@Messages("user.details.places")</b><a class="pull-right">@stats._2</a>
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fa fa-check-square-o fa-fw"></i> <b>@Messages("user.details.votings")</b><a class="pull-right">@stats._3</a>
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fa fa-shopping-cart fa-fw"></i> <b>@Messages("user.details.orders")</b><a class="pull-right">@stats._4</a>
+                        </li>
+                        @stats._5.map { balance =>
+                            <li class="list-group-item">
+                                <i class="fa fa-money fa-fw"></i> <b>@Messages("user.details.prepaid")</b><a class="pull-right">
+                            @tags.currency(Some(balance))</a>
+                            </li>
+                        }
+                    </ul>
+                    @if(userDetails.id != user.userId) {
+                        @tags.alertFromForm(form)
+                        @b3.form(routes.UserController.handlePrepaid(userDetails.id)) {
+                            @helper.CSRF.formField
+                            @b3.number(form("amount"), '_label -> Messages("user.details.amount"), 'placeholder -> Messages("user.details.amount"), 'step -> 0.01, 'min -> 0.01)
+                            @b3.submit('class -> "btn btn-primary") {
+                                @Messages("user.details.accept")
+                            }
                         }
                     }
-                }
+                </div>
             </div>
         </div>
     </div>

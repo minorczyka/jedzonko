@@ -1,34 +1,36 @@
 @(user: silhouette.SilhouetteUser, groups: Seq[(models.GroupRow, models.UserRow)])(implicit messages: Messages)
 
 @main(Messages("group.find.title"), user, Some("group"), Some(Messages("group.find.title"))) {
-    <div class="col-lg-6 col-lg-offset-3">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">@Messages("group.find.results")</h3>
-            </div>
-            @if(groups.isEmpty) {
-                <div class="box-body">
-                    <h4>@Messages("group.find.nogroups")</h4>
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@Messages("group.find.results")</h3>
                 </div>
-            } else {
-                <div class="box-body no-padding">
-                    <table class="table table-striped">
-                        <tbody><tr>
-                            <th>#</th>
-                            <th>@Messages("group.find.name")</th>
-                            <th>@Messages("group.find.owner")</th>
-                        </tr>
-                        @for((g, i) <- groups.zipWithIndex) {
-                            <tr>
-                                <td>@(i + 1)</td>
-                                <td><a href="@routes.GroupController.groupDetails(g._1.id)">@g._1.name</a></td>
-                                <td>@g._2.fullName</td>
+                @if(groups.isEmpty) {
+                    <div class="box-body">
+                        <h4>@Messages("group.find.nogroups")</h4>
+                    </div>
+                } else {
+                    <div class="box-body no-padding">
+                        <table class="table table-striped">
+                            <tbody><tr>
+                                <th>#</th>
+                                <th>@Messages("group.find.name")</th>
+                                <th>@Messages("group.find.owner")</th>
                             </tr>
-                        }
-                        </tbody>
-                    </table>
-                </div>
-            }
+                                @for((g, i) <- groups.zipWithIndex) {
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td><a href="@routes.GroupController.groupDetails(g._1.id)">@g._1.name</a></td>
+                                        <td>@g._2.fullName</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 }

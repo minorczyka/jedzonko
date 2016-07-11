@@ -2,7 +2,7 @@
 @(user: silhouette.SilhouetteUser, votings: Seq[(models.GroupRow, models.VotingRow, models.UserRow)])(implicit messages: Messages)
 
 @main(Messages("vote.list.title"), user, Some("vote"), Some(Messages("vote.list.title"))) {
-    <div class="row" style="margin-bottom: 50px;">
+    <div class="row">
         <div class="col-lg-8 col-lg-offset-2">
         @for(group <- votings.groupBy(v => v._1)) {
             <div class="box box-primary">

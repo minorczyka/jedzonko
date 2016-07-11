@@ -3,24 +3,25 @@
 @implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-3", "col-md-9") }
 
 @main(Messages("vote.create.title"), user, Some("vote"), Some(Messages("vote.create.title"))) {
-    <div class="col-lg-6 col-lg-offset-3">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">@Messages("order.create.new")</h3>
-            </div>
-            <div class="box-body">
-                @tags.alertFromForm(form)
-                @b3.form(routes.VotingController.handleCreateVoting) {
-                    @helper.CSRF.formField
-                    @b3.select(form("groupId"), options = groups, '_label -> Messages("vote.create.group"), 'placehodler -> Messages("vote.create.group"))
-                    @b3.select(form("placesIds"), options = Seq[(String, String)](), '_label -> Messages("vote.create.places"), 'placehodler -> Messages("vote.create.places"), 'multiple -> true)
-                    @b3.inputType( "text", form("votingEnd"), 'class -> "form-control form_datetime", '_label -> Messages("vote.create.vote.end"))
-                    @b3.inputType( "text", form("orderEnd"), 'class -> "form-control form_datetime", '_label -> Messages("vote.create.order.end"))
-                    @b3.submit('class -> "btn btn-primary"){ @Messages("vote.create.create") }
-                }
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@Messages("order.create.new")</h3>
+                </div>
+                <div class="box-body">
+                    @tags.alertFromForm(form)
+                    @b3.form(routes.VotingController.handleCreateVoting) {
+                        @helper.CSRF.formField
+                        @b3.select(form("groupId"), options = groups, '_label -> Messages("vote.create.group"), 'placehodler -> Messages("vote.create.group"))
+                        @b3.select(form("placesIds"), options = Seq[(String, String)](), '_label -> Messages("vote.create.places"), 'placehodler -> Messages("vote.create.places"), 'multiple -> true)
+                        @b3.inputType( "text", form("votingEnd"), 'class -> "form-control form_datetime", '_label -> Messages("vote.create.vote.end"))
+                        @b3.inputType( "text", form("orderEnd"), 'class -> "form-control form_datetime", '_label -> Messages("vote.create.order.end"))
+                        @b3.submit('class -> "btn btn-primary"){ @Messages("vote.create.create") }
+                    }
+                </div>
             </div>
         </div>
     </div>
     <script src="@routes.Assets.versioned("js/voting.create.js")"></script>
-
 }

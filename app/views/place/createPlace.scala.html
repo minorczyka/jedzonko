@@ -3,22 +3,24 @@
 @implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-3", "col-md-9") }
 
 @main(Messages("place.create.title"), user, Some("place"), Some(Messages("place.create.title"))) {
-    <div class="col-lg-6 col-lg-offset-3">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">@Messages("place.create.new")</h3>
-            </div>
-            <div class="box-body">
-                @tags.alertFromForm(form)
-                @b3.form(routes.PlaceController.handleCreatePlace) {
-                    @helper.CSRF.formField
-                    @b3.text(form("name"), '_label -> Messages("place.create.name"), 'placeholder -> Messages("place.create.name"))
-                    @b3.select(form("groupId"), options = groups, '_label -> Messages("place.create.group"), 'placehodler -> Messages("place.create.group"))
-                    @b3.url(form("url"), '_label -> Messages("place.create.url"), 'placeholder -> Messages("place.create.url"))
-                    @b3.number(form("minimumOrder"), '_label -> Messages("place.create.minimum"), 'placeholder -> Messages("place.create.minimum"), 'step -> 0.01)
-                    @b3.number(form("deliveryCost"), '_label -> Messages("place.create.delivery"), 'placeholder -> Messages("place.create.delivery"), 'step -> 0.01)
-                    @b3.submit('class -> "btn btn-primary"){ @Messages("place.create.create") }
-                }
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@Messages("place.create.new")</h3>
+                </div>
+                <div class="box-body">
+                    @tags.alertFromForm(form)
+                    @b3.form(routes.PlaceController.handleCreatePlace) {
+                        @helper.CSRF.formField
+                        @b3.text(form("name"), '_label -> Messages("place.create.name"), 'placeholder -> Messages("place.create.name"))
+                        @b3.select(form("groupId"), options = groups, '_label -> Messages("place.create.group"), 'placehodler -> Messages("place.create.group"))
+                        @b3.url(form("url"), '_label -> Messages("place.create.url"), 'placeholder -> Messages("place.create.url"))
+                        @b3.number(form("minimumOrder"), '_label -> Messages("place.create.minimum"), 'placeholder -> Messages("place.create.minimum"), 'step -> 0.01)
+                        @b3.number(form("deliveryCost"), '_label -> Messages("place.create.delivery"), 'placeholder -> Messages("place.create.delivery"), 'step -> 0.01)
+                        @b3.submit('class -> "btn btn-primary"){ @Messages("place.create.create") }
+                    }
+                </div>
             </div>
         </div>
     </div>

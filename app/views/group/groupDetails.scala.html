@@ -2,86 +2,86 @@
 
 @main(Messages("group.details.title"), user, Some("group"), Some(Messages("group.details.title"))) {
     <div class="row">
-    </div>
-    <div class="col-md-4">
-        <div class="box box-primary">
-            <div class="box-header">
-                <h3 class="box-title">@Messages("group.find.name"): @group.name</h3>
-            </div>
-            <div class="box-body">
-                <ul class="list-group list-group-unbordered">
-                    @members.find(u => u.id == group.ownerId).map { owner =>
-                    <li class="list-group-item">
-                        <b>@Messages("group.details.owner")</b><a href="@routes.UserController.userDetails(owner.id)" class="pull-right">@owner.fullName</a>
-                    </li>
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">@Messages("group.find.name"): @group.name</h3>
+                </div>
+                <div class="box-body">
+                    <ul class="list-group list-group-unbordered">
+                        @members.find(u => u.id == group.ownerId).map { owner =>
+                            <li class="list-group-item">
+                                <b>@Messages("group.details.owner")</b><a href="@routes.UserController.userDetails(owner.id)" class="pull-right">@owner.fullName</a>
+                            </li>
+                        }
+                        <li class="list-group-item">
+                            <b>@Messages("group.details.creation.date")</b><a class="pull-right">@group.creationDate.format("dd-MM-yyyy")</a>
+                        </li>
+                    </ul>
+                    @if(group.ownerId == user.userId) {
+                        <a href="@routes.GroupController.changePassword(group.id)" role="button" class="btn btn-default btn-block">@Messages("group.details.change")</a>
+                        <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteModal">@Messages("group.details.delete")</button>
+                    } else {
+                        <a href="@routes.GroupController.leaveGroup(group.id)" type="button" class="btn btn-warning btn-block">@Messages("group.details.leave")</a>
                     }
-                    <li class="list-group-item">
-                        <b>@Messages("group.details.creation.date")</b><a class="pull-right">@group.creationDate.format("dd-MM-yyyy")</a>
-                    </li>
-                </ul>
-            @if(group.ownerId == user.userId) {
-                <a href="@routes.GroupController.changePassword(group.id)" role="button" class="btn btn-default btn-block">@Messages("group.details.change")</a>
-                <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteModal">@Messages("group.details.delete")</button>
-            } else {
-                <a href="@routes.GroupController.leaveGroup(group.id)" type="button" class="btn btn-warning btn-block">@Messages("group.details.leave")</a>
-            }
+                </div>
             </div>
-        </div>
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">@Messages("group.list.members")</h3>
-            </div>
-            <div class="box-body no-padding">
-                <table class="table table-striped">
-                    <tbody><tr>
-                        <th style="width: 10px">#</th>
-                        <th>@Messages("group.details.full.name")</th>
-                        @if(group.ownerId == user.userId) {
-                            <th></th>
-                        }
-                    </tr>
-                        @for((m, i) <- members.zipWithIndex) {
-                            <tr>
-                                <td>@{i + 1}</td>
-                                <td><a href="@routes.UserController.userDetails(m.id)">@m.fullName</a></td>
-                                <td style="text-align: center;">
-                                @if(group.ownerId == user.userId && m.id != user.userId) {
-                                    <a role="button" data-toggle="modal" data-target="#kickModal@m.id"><i class="fa fa-ban" aria-hidden="true"></i></a>
-                                    @tags.modal("kickModal" + m.id, Messages("group.details.kick.title"), Messages("group.details.kick.message"), routes.GroupController.kickUser(group.id, m.id))
-                                }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-8">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">@Messages("group.list.places")</h3>
-            </div>
-            <div class="box-body no-padding">
-                <table class="table table-striped">
-                    <tbody><tr>
-                        <th>@Messages("place.table.name")</th>
-                        <th>@Messages("place.table.minimumOrder")</th>
-                        <th>@Messages("place.table.deliveryCost")</th>
-                        <th>@Messages("place.table.author")</th>
-                        <th>@Messages("place.table.url")</th>
-                    </tr>
-                    @for(place <- places) {
-                        <tr>
-                            <td><a href="@routes.PlaceController.placeDetails(place.id)">@place.name</a></td>
-                            <td>@tags.currency(place.minimumOrder)</td>
-                            <td>@tags.currency(place.deliveryCost)</td>
-                            <td>@members.find(u => u.id == place.authorId).map(u => u.fullName)</td>
-                            <td style="text-align: center;"><a href="@place.url" target="_blank"><i class="fa fa-reply" aria-hidden="true"></i></a></td>
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@Messages("group.list.members")</h3>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-striped">
+                        <tbody><tr>
+                            <th style="width: 10px">#</th>
+                            <th>@Messages("group.details.full.name")</th>
+                            @if(group.ownerId == user.userId) {
+                                <th></th>
+                            }
                         </tr>
-                    }
-                    </tbody>
-                </table>
+                            @for((m, i) <- members.zipWithIndex) {
+                                <tr>
+                                    <td>@{i + 1}</td>
+                                    <td><a href="@routes.UserController.userDetails(m.id)">@m.fullName</a></td>
+                                    <td style="text-align: center;">
+                                    @if(group.ownerId == user.userId && m.id != user.userId) {
+                                        <a role="button" data-toggle="modal" data-target="#kickModal@m.id"><i class="fa fa-ban" aria-hidden="true"></i></a>
+                                        @tags.modal("kickModal" + m.id, Messages("group.details.kick.title"), Messages("group.details.kick.message"), routes.GroupController.kickUser(group.id, m.id))
+                                    }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@Messages("group.list.places")</h3>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-striped">
+                        <tbody><tr>
+                            <th>@Messages("place.table.name")</th>
+                            <th>@Messages("place.table.minimumOrder")</th>
+                            <th>@Messages("place.table.deliveryCost")</th>
+                            <th>@Messages("place.table.author")</th>
+                            <th>@Messages("place.table.url")</th>
+                        </tr>
+                            @for(place <- places) {
+                                <tr>
+                                    <td><a href="@routes.PlaceController.placeDetails(place.id)">@place.name</a></td>
+                                    <td>@tags.currency(place.minimumOrder)</td>
+                                    <td>@tags.currency(place.deliveryCost)</td>
+                                    <td>@members.find(u => u.id == place.authorId).map(u => u.fullName)</td>
+                                    <td style="text-align: center;"><a href="@place.url" target="_blank"><i class="fa fa-reply" aria-hidden="true"></i></a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
