@@ -6,7 +6,7 @@ import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import dao.{GroupDao, OrderDao, PlaceDao}
-import forms.{ChatMessageForm, CreateOrderForm, CreateUserOrderForm}
+import forms.{ChatMessageForm, CreateOrderForm, CreateUserOrderForm, EditUserOrderForm}
 import models.{OrderMessageRow, OrderRow, UserToOrderRow}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -185,6 +185,31 @@ class OrderController @Inject()(
       }
       case None => Future.successful(NotFound(views.html.order.orderNotFound(request.identity)))
     }
+  }
+
+  def editUserOrder = SecuredAction.async { implicit request =>
+    EditUserOrderForm.form.bindFromRequest.fold(
+      form => Future.successful(Redirect(routes.OrderController.listOrders)),
+      data => {
+        orderDao.findUserOrder(data.userOrderId).flatMap {
+          case Some(userOrder) => {
+            if (userOrder.userId == request.identity.userId) {
+              orderDao.updateUserOrder(userOrder.copy(
+                subject = data.subject,
+                additionalInfo = data.additionalInfo,
+                cost = data.cost
+              )).map(x => Some(x))
+            } else {
+              Future.successful(None)
+            }
+          }
+          case None => Future.successful(None)
+        }.map {
+          case Some(userOrder) => Redirect(routes.OrderController.getOrderDetails(userOrder.orderId))
+          case None => Redirect(routes.OrderController.listOrders)
+        }
+      }
+    )
   }
 
   def deleteUserOrder(userOrderId: Int) = SecuredAction.async { implicit request =>

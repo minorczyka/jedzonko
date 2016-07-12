@@ -1,0 +1,28 @@
+@import forms.EditUserOrderForm
+@()(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-4", "col-md-8") }
+
+<div id="orderEditModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @b3.form(routes.OrderController.editUserOrder) {
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@Messages("order.details.user.order.edit")</h4>
+            </div>
+            <div class="modal-body">
+                @helper.CSRF.formField
+                @b3.hidden(EditUserOrderForm.form("userOrderId").name, 0)
+                @b3.text(EditUserOrderForm.form("editSubject"), '_label -> Messages("order.details.order"), 'placeholder -> Messages("order.details.order"), 'required -> true)
+                @b3.text(EditUserOrderForm.form("editAdditionalInfo"), '_label -> Messages("order.details.additional.info"), 'placeholder -> Messages("order.details.additional.info"))
+                @b3.number(EditUserOrderForm.form("editCost"), '_label -> Messages("order.details.cost"), 'placeholder -> Messages("order.details.cost"), 'step -> 0.01)
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">@Messages("order.details.save")</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("order.details.cancel")</button>
+            </div>
+            }
+        </div>
+    </div>
+</div>

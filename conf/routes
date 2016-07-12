@@ -66,6 +66,7 @@ GET     /order/list                     controllers.OrderController.listOrders
 GET     /order/details/:id              controllers.OrderController.getOrderDetails(id: Int)
 POST    /order/comment/:id              controllers.OrderController.handleAddMessage(id: Int)
 POST    /order/user/add/:id             controllers.OrderController.handleAddUserOrder(id: Int)
+POST    /order/user/edit                controllers.OrderController.editUserOrder
 GET     /order/user/delete/:id          controllers.OrderController.deleteUserOrder(id: Int)
 GET     /order/finalize/:id             controllers.OrderController.finalizeOrder(id: Int)
 GET     /order/find/:id                 controllers.OrderController.findOrder(id: Int)

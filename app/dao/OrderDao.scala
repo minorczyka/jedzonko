@@ -110,6 +110,11 @@ class OrderDao @Inject()(val dbConfigProvider: DatabaseConfigProvider) {
     db.run(q.delete).map(_ => ())
   }
 
+  def updateUserOrder(userOrder: UserToOrderRow) : Future[UserToOrderRow] = {
+    val q = Tables.UserToOrder.filter(_.id === userOrder.id)
+    db.run(q.update(userOrder)).map(_ => userOrder)
+  }
+
   def updateUserOrdersPrices(orderId: Int, userOrders: Seq[(Int, Option[Float])]) : Future[Unit] = {
     val actions = (for {
       _ <- DBIO.seq(userOrders.map { uo =>

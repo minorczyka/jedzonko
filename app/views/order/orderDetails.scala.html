@@ -132,7 +132,7 @@
                             <th>@Messages("order.details.additional.info")</th>
                             <th>@Messages("order.details.cost")</th>
                             @if(order.status == OrderDao.orderStarted) {
-                                <th style="width: 10px"></th>
+                                <th style="width: 45px"></th>
                             } else {
                                 @if(order.status == OrderDao.orderFinished) {
                                     <th style="width: 10px">@Messages("order.details.status")</th>
@@ -140,14 +140,17 @@
                             }
                         </tr>
                             @for((uo, i) <- userToOrder.filter(o => o._1.id == user.userId).zipWithIndex) {
-                                <tr>
+                                <tr userOrderId="@uo._2.id">
                                     <td>@(i + 1)</td>
                                     <td><a href="@routes.UserController.userDetails(uo._1.id)">@uo._1.fullName</a></td>
-                                    <td>@uo._2.subject</td>
-                                    <td>@uo._2.additionalInfo.map(x => x)</td>
-                                    <td>@tags.currency(uo._2.cost)</td>
+                                    <td class="user-order-subject">@uo._2.subject</td>
+                                    <td class="user-order-info">@uo._2.additionalInfo.map(x => x)</td>
+                                    <td class="user-order-cost">@tags.currency(uo._2.cost)</td>
                                     @if(order.status == OrderDao.orderStarted) {
-                                        <td><a href="@routes.OrderController.deleteUserOrder(uo._2.id)"><i class="fa fa-times"></i></a></td>
+                                        <td>
+                                            <a href="#" data-toggle="modal" data-target="#orderEditModal"><i class="fa fa-pencil order-edit-btn"></i></a>
+                                            <a href="@routes.OrderController.deleteUserOrder(uo._2.id)"><i class="fa fa-times"></i></a>
+                                        </td>
                                     } else {
                                         @if(order.status == OrderDao.orderFinished) {
                                             <td style="text-align: center">@tags.userOrderBadge(uo._2.status)</td>
@@ -174,4 +177,6 @@
         </div>
     </div>
     @tags.modal("deleteModal", Messages("order.details.delete"), Messages("order.details.delete.message"), routes.OrderController.deleteOrder(order.id))
+    @orderEditModal()
+    <script src="@routes.Assets.versioned("js/order.edit.js")"></script>
 }
