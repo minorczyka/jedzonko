@@ -41,14 +41,14 @@ class ApplicationController @Inject()(
   def latestVoting = SecuredAction.async { implicit request =>
     votingDao.findLatestOpenUserVoting(request.identity.userId).map {
       case Some(votingRow) => Redirect(routes.VotingController.votingDetails(votingRow.id))
-      case None => Redirect(routes.ApplicationController.index)
+      case None => Redirect(routes.VotingController.listVotings)
     }
   }
 
   def latestOrder = SecuredAction.async { implicit request =>
     orderDao.findLatestOpenUserOrder(request.identity.userId).map {
       case Some(orderRow) => Redirect(routes.OrderController.getOrderDetails(orderRow.id))
-      case None => Redirect(routes.ApplicationController.index)
+      case None => Redirect(routes.OrderController.listOrders)
     }
   }
 

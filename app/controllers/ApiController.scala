@@ -87,14 +87,10 @@ class ApiController @Inject()(
       val userOrders = orders.groupBy(x => x.userId)
       val orderMap = orderInfo.orders.map(x => (x.id, x.cost)).toMap
       val additionalCost = orderInfo.additionalCost.getOrElse(0.0f) / userOrders.size
-      Logger.debug(userOrders.toString)
-      Logger.debug(additionalCost.toString)
-      Logger.debug(orders.toString)
       orders.map { order =>
         val cost = orderMap.getOrElse(order.id, order.cost).getOrElse(0.0f)
         (order.id, Some(cost * (1.0f - orderInfo.discount.getOrElse(0.0f) / 100.0f) + (additionalCost / userOrders(order.userId).size)))
       }
-//      orderInfo.orders.map(x => (x.id, x.cost))
     }
   }
 
