@@ -194,11 +194,20 @@ class OrderController @Inject()(
         orderDao.findUserOrder(data.userOrderId).flatMap {
           case Some(userOrder) => {
             if (userOrder.userId == request.identity.userId) {
-              orderDao.updateUserOrder(userOrder.copy(
-                subject = data.subject,
-                additionalInfo = data.additionalInfo,
-                cost = data.cost
-              )).map(x => Some(x))
+              orderDao.find(userOrder.orderId).flatMap {
+                case Some(order) => {
+                  if (order.status == OrderDao.orderStarted) {
+                    orderDao.updateUserOrder(userOrder.copy(
+                      subject = data.subject,
+                      additionalInfo = data.additionalInfo,
+                      cost = data.cost
+                    )).map(x => Some(x))
+                  } else {
+                    Future.successful(None)
+                  }
+                }
+                case None => Future.successful(None)
+              }
             } else {
               Future.successful(None)
             }
@@ -206,7 +215,7 @@ class OrderController @Inject()(
           case None => Future.successful(None)
         }.map {
           case Some(userOrder) => Redirect(routes.OrderController.getOrderDetails(userOrder.orderId))
-          case None => Redirect(routes.OrderController.listOrders)
+          case None => BadRequest(views.html.order.orderNotFound(request.identity))
         }
       }
     )
