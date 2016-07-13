@@ -1,3 +1,2 @@
--edytowanie zamówień
-
 bugi:
+-zablokować możliwość edytowania zakończonych zamówień użytkownika
