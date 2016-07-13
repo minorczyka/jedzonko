@@ -1,2 +1,4 @@
+-gravatary
+
 bugi:
--zablokować możliwość edytowania zakończonych zamówień użytkownika
+-edytowanie zamówień, czasami nie łapie za pierwszym razem JavaScript

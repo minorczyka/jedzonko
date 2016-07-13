@@ -21,7 +21,7 @@
                             <span class="direct-chat-timestamp pull-right">@c._3.format("dd-MM-yyyy HH:mm")</span>
                         </div>
                         <a href="@routes.UserController.userDetails(c._1.id)">
-                            <img class="direct-chat-img" src="@c._1.avatarUrl.getOrElse(routes.Assets.versioned("images/silhouette.png"))" alt="message user image">
+                            @tags.userImage(c._1, "direct-chat-img")
                         </a>
                         <div class="direct-chat-text">@c._2</div>
                     </div>
@@ -32,7 +32,7 @@
                             <span class="direct-chat-timestamp pull-left">@c._3.format("dd-MM-yyyy HH:mm")</span>
                         </div>
                         <a href="@routes.UserController.userDetails(c._1.id)">
-                            <img class="direct-chat-img" src="@c._1.avatarUrl.getOrElse(routes.Assets.versioned("images/silhouette.png"))" alt="message user image">
+                            @tags.userImage(c._1, "direct-chat-img")
                         </a>
                         <div class="direct-chat-text">@c._2</div>
                     </div>

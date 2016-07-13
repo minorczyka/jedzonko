@@ -1,0 +1,12 @@
+@(value: Any, cssClass: String)
+
+@if(value.isInstanceOf[silhouette.SilhouetteUser]) {
+    @defining(value.asInstanceOf[silhouette.SilhouetteUser]) { user =>
+        <img class="@cssClass" src="@user.avatarURL.getOrElse(routes.Assets.versioned("images/silhouette.png"))">
+    }
+}
+@if(value.isInstanceOf[models.UserRow]) {
+    @defining(value.asInstanceOf[models.UserRow]) { user =>
+        <img class="@cssClass" src="@user.avatarUrl.getOrElse(routes.Assets.versioned("images/silhouette.png"))">
+    }
+}
