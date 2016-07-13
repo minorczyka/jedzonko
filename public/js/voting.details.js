@@ -2,7 +2,6 @@ $(function(){
     $('#placesIds').multiSelect()
 
     function hashCode(str) {
-        console.log(str);
         var hash = 0, i, chr, len;
         if (str.length === 0) return hash;
         for (i = 0, len = str.length; i < len; i++) {
@@ -10,7 +9,8 @@ $(function(){
             hash  = ((hash << 5) - hash) + chr;
             hash |= 0;
         }
-        return hash;
+        if (hash < 0) return -hash;
+        else return hash;
     }
 
     var ctx = $("#ctx")[0].getContext("2d");
@@ -22,8 +22,6 @@ $(function(){
         var green = hash % 256;
         var blue = Math.floor(hash / 256) % 256;
         var red = Math.floor(hash / 16384) % 256;
-        console.log(hash);
-        console.log('rgba(' + red + ',' + green + ',' + blue + ',0.5)');
         colors.push('rgba(' + red + ',' + green + ',' + blue + ',0.7)');
     }
     var data = {

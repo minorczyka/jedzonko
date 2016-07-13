@@ -4,7 +4,6 @@ $(function(){
 
     function getPlaces(groupId) {
         $.get("/api/place/list/" + groupId, function (data, status) {
-            console.log(data);
             placeSelect.empty();
             $.each(data, function(index, value) {
                 placeSelect.append($("<option></option>")
